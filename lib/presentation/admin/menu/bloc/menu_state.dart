@@ -12,3 +12,15 @@ final class MenuError extends MenuState {
   final String message;
   MenuError({required this.message});
 }
+
+// State baru untuk notifikasi aksi sukses
+class MenuActionSuccess extends MenuState {
+  final String message;
+  MenuActionSuccess({required this.message});
+}
+
+// State baru untuk notifikasi aksi gagal
+class MenuActionFailure extends MenuState {
+  final String message;
+  MenuActionFailure({required this.message});
+}
