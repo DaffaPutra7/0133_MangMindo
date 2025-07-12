@@ -17,5 +17,14 @@ class MenusBloc extends Bloc<MenuEvent, MenuState> {
         (data) => emit(MenuLoaded(menuResponse: data)),
       );
     });
+
+    // ✅ Tambahkan handler untuk event DeleteMenu
+    on<DeleteMenu>((event, emit) async {
+      final result = await repository.deleteMenu(event.menuId);
+      result.fold(
+        (error) => emit(MenuActionFailure(message: error)),
+        (message) => emit(MenuActionSuccess(message: message)),
+      );
+    });
   }
 }
