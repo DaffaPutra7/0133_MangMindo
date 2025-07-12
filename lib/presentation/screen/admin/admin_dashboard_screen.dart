@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:projek_akhir/core/components/cards.dart';
 import 'package:projek_akhir/core/core.dart';
 import 'package:projek_akhir/presentation/admin/menu/bloc/menu_bloc.dart';
 import 'package:projek_akhir/presentation/screen/admin/menu/add_menu_screen.dart';
@@ -50,55 +51,22 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               itemCount: state.menuResponse.data.length,
               itemBuilder: (context, index) {
                 final menu = state.menuResponse.data[index];
-                return Card(
-                  elevation: 3,
-                  margin: const EdgeInsets.only(bottom: 16.0),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(12.0),
-                    leading: const Icon(
-                      Icons.fastfood,
-                      size: 40,
-                      color: Colors.grey,
-                    ),
-                    title: Text(
-                      menu.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      menu.price.toInt().currencyFormatRp,
-                      style: const TextStyle(color: AppColors.primaryGreen),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: AppColors.grey),
-                          onPressed: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => EditMenuScreen(menu: menu),
-                              ),
-                            );
-                            // Jika hasilnya true, refresh daftar menu
-                            if (result == true) {
-                              context.read<MenusBloc>().add(GetMenu());
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.delete,
-                            color: AppColors.primaryRed,
-                          ),
-                          onPressed: () {
-                            // TODO: Tampilkan dialog konfirmasi hapus
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                return MenuCard(
+                  data: menu, 
+                  onEditTap: () async {
+                    final result = await Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => EditMenuScreen(menu: menu),
+                      ),
+                    );
+                    if (result == true) {
+                      context.read<MenusBloc>().add(GetMenu());
+                    }
+                  }, 
+                  onDeleteTap: () {
+                    // TODO: Tampilkan dialog konfirmasi hapus
+                  },
                 );
               },
             );
