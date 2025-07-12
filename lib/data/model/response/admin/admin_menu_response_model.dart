@@ -22,7 +22,7 @@ class Menu {
     final String? image;
     final DateTime createdAt;
     final DateTime updatedAt;
-    final String? imageUrl;
+    // final String? imageUrl;
 
     Menu({
         required this.id,
@@ -32,7 +32,7 @@ class Menu {
         this.image,
         required this.createdAt,
         required this.updatedAt,
-        this.imageUrl,
+        // this.imageUrl,
     });
 
     factory Menu.fromMap(Map<String, dynamic> json) => Menu(
@@ -43,6 +43,6 @@ class Menu {
         image: json["image"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-        imageUrl: json["image_url"]
+        // imageUrl: json["image_url"]
     );
 }

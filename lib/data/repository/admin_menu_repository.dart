@@ -28,18 +28,37 @@ class AdminMenuRepository {
 
   Future<Either<String, String>> addMenu(AddMenuRequestModel model) async {
     try {
-      // Panggil http client langsung, token sudah diurus di dalamnya
-      final response = await _httpClient.postWithFile(
-        'admin/menus',
-        model.toMap(),
-        model.image,
-      );
+      // Gunakan method .post() biasa, bukan .postWithFile()
+      final response = await _httpClient.post('admin/menus', model.toMap());
 
       if (response.statusCode == 201) {
         return const Right('Menu berhasil ditambahkan');
       } else {
         final error =
             jsonDecode(response.body)['message'] ?? 'Gagal menambah data';
+        return Left(error);
+      }
+    } catch (e) {
+      return Left('Terjadi kesalahan: ${e.toString()}');
+    }
+  }
+
+  Future<Either<String, String>> updateMenu(
+    int menuId,
+    AddMenuRequestModel model,
+  ) async {
+    try {
+      // Gunakan juga method .post() untuk update
+      final response = await _httpClient.post(
+        'admin/menus/update/$menuId',
+        model.toMap(),
+      );
+
+      if (response.statusCode == 200) {
+        return const Right('Menu berhasil diperbarui');
+      } else {
+        final error =
+            jsonDecode(response.body)['message'] ?? 'Gagal memperbarui data';
         return Left(error);
       }
     } catch (e) {

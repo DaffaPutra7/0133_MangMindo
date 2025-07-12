@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projek_akhir/core/core.dart';
 import 'package:projek_akhir/presentation/admin/menu/bloc/menu_bloc.dart';
 import 'package:projek_akhir/presentation/screen/admin/menu/add_menu_screen.dart';
+import 'package:projek_akhir/presentation/screen/admin/menu/edit_menu_screen.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -54,30 +55,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   margin: const EdgeInsets.only(bottom: 16.0),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(12.0),
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child:
-                          menu.imageUrl != null && menu.imageUrl!.isNotEmpty
-                              ? Image.network(
-                                'http://10.0.2.2:8000${menu.imageUrl}', // Langsung gabungkan dengan base URL
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  // Baris ini akan mencetak error di console jika gambar gagal dimuat
-                                  print('Image Load Error: $error');
-                                  return const Icon(
-                                    Icons.broken_image,
-                                    size: 40,
-                                    color: Colors.grey,
-                                  );
-                                },
-                              )
-                              : const Icon(
-                                Icons.fastfood,
-                                size: 40,
-                                color: Colors.grey,
-                              ),
+                    leading: const Icon(
+                      Icons.fastfood,
+                      size: 40,
+                      color: Colors.grey,
                     ),
                     title: Text(
                       menu.name,
@@ -92,8 +73,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.edit, color: AppColors.grey),
-                          onPressed: () {
-                            // TODO: Navigasi ke halaman edit menu
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => EditMenuScreen(menu: menu),
+                              ),
+                            );
+                            // Jika hasilnya true, refresh daftar menu
+                            if (result == true) {
+                              context.read<MenusBloc>().add(GetMenu());
+                            }
                           },
                         ),
                         IconButton(

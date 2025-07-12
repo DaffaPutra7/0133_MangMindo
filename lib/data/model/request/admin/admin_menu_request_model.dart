@@ -4,13 +4,13 @@ class AddMenuRequestModel {
   final String name;
   final int price;
   final String? description;
-  final XFile? image;
+  // final XFile? image;
 
   AddMenuRequestModel({
     required this.name,
     required this.price,
     this.description,
-    this.image,
+    // this.image,
   });
 
   // Mengubah data menjadi format Map<String, String> untuk dikirim
