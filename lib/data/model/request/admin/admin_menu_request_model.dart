@@ -2,7 +2,7 @@ import 'package:image_picker/image_picker.dart';
 
 class AddMenuRequestModel {
   final String name;
-  final String price;
+  final int price;
   final String? description;
   final XFile? image;
 
@@ -17,7 +17,7 @@ class AddMenuRequestModel {
   Map<String, String> toMap() {
     return {
       'name': name,
-      'price': price,
+      'price': price.toString(),
       if (description != null) 'description': description!,
     };
   }

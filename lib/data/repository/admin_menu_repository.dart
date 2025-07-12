@@ -11,7 +11,7 @@ class AdminMenuRepository {
 
   Future<Either<String, MenuResponseModel>> getMenus() async {
     try {
-      // Langsung panggil http client dari repository
+      // Panggil http client langsung, token sudah diurus di dalamnya
       final response = await _httpClient.get('admin/menus');
 
       if (response.statusCode == 200) {
@@ -28,6 +28,7 @@ class AdminMenuRepository {
 
   Future<Either<String, String>> addMenu(AddMenuRequestModel model) async {
     try {
+      // Panggil http client langsung, token sudah diurus di dalamnya
       final response = await _httpClient.postWithFile(
         'admin/menus',
         model.toMap(),

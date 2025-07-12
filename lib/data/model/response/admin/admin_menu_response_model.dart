@@ -18,10 +18,11 @@ class Menu {
     final int id;
     final String name;
     final String? description;
-    final int price;
+    final double price;
     final String? image;
     final DateTime createdAt;
     final DateTime updatedAt;
+    final String? imageUrl;
 
     Menu({
         required this.id,
@@ -31,15 +32,17 @@ class Menu {
         this.image,
         required this.createdAt,
         required this.updatedAt,
+        this.imageUrl,
     });
 
     factory Menu.fromMap(Map<String, dynamic> json) => Menu(
         id: json["id"],
         name: json["name"],
         description: json["description"],
-        price: int.tryParse(json["price"]) ?? 0,
+        price: double.tryParse(json["price"].toString()) ?? 0.0,
         image: json["image"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        imageUrl: json["image_url"]
     );
 }

@@ -101,7 +101,7 @@ class _AddMenuscreenState extends State<AddMenuscreen> {
                     onPressed: () {
                       final model = AddMenuRequestModel(
                         name: nameController.text,
-                        price: priceController.text,
+                        price: int.tryParse(priceController.text) ?? 0,
                         description: descriptionController.text,
                         image: _imageFile,
                       );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projek_akhir/core/constants/colors.dart';
+import 'package:projek_akhir/data/repository/admin_menu_repository.dart';
 import 'package:projek_akhir/data/repository/auth_repository.dart';
+import 'package:projek_akhir/presentation/admin/menu/bloc/menu_bloc.dart';
 import 'package:projek_akhir/presentation/auth/bloc/login/bloc/login_bloc.dart';
 import 'package:projek_akhir/presentation/screen/login_screen.dart';
 import 'package:projek_akhir/service/service_http_client.dart';
@@ -15,10 +17,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LoginBloc(
-        AuthRepository(ServiceHttpClient()),
-      ),
+    // Gunakan MultiBlocProvider untuk menyediakan semua BLoC
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoginBloc(
+            AuthRepository(ServiceHttpClient()),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => MenusBloc(
+            AdminMenuRepository(ServiceHttpClient()),
+          ),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'MangMindo',

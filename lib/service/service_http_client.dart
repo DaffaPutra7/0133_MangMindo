@@ -41,16 +41,16 @@ class ServiceHttpClient {
 
   // Method POST dengan file
   Future<http.Response> postWithFile(
-    String endpoint,
-    Map<String, String> body,
-    XFile? file) async {
+      String endpoint, Map<String, String> body, XFile? file) async {
     final url = Uri.parse('$baseUrl/$endpoint');
     final token = await _secureStorage.read(key: 'auth_token');
 
     var request = http.MultipartRequest('POST', url);
 
     // Tambahkan header
-    request.headers['Authorization'] = 'Bearer $token';
+    if (token != null) {
+      request.headers['Authorization'] = 'Bearer $token';
+    }
     request.headers['Accept'] = 'application/json';
 
     // Tambahkan data teks
