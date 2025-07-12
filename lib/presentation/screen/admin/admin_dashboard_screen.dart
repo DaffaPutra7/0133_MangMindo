@@ -24,55 +24,96 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Hapus BlocProvider dari sini
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard Admin - Menu'),
         backgroundColor: AppColors.primaryRed,
         foregroundColor: AppColors.white,
       ),
-      body: BlocBuilder<MenusBloc, MenuState>(
-        builder: (context, state) {
-          if (state is MenuLoading) {
-            return const Center(child: CircularProgressIndicator());
+      body: BlocListener<MenusBloc, MenuState>(
+        listener: (context, state) {
+          if (state is MenuActionSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: AppColors.primaryGreen,
+              ),
+            );
+            // Muat ulang daftar menu
+            context.read<MenusBloc>().add(GetMenu());
           }
-          if (state is MenuError) {
-            return Center(child: Text(state.message));
-          }
-          if (state is MenuLoaded) {
-            if (state.menuResponse.data.isEmpty) {
-              return const Center(
-                child: Text('Belum ada menu. Tekan + untuk menambah.'),
-              );
-            }
-            // Tampilkan daftar menu
-            return ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemCount: state.menuResponse.data.length,
-              itemBuilder: (context, index) {
-                final menu = state.menuResponse.data[index];
-                return MenuCard(
-                  data: menu, 
-                  onEditTap: () async {
-                    final result = await Navigator.push(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => EditMenuScreen(menu: menu),
-                      ),
-                    );
-                    if (result == true) {
-                      context.read<MenusBloc>().add(GetMenu());
-                    }
-                  }, 
-                  onDeleteTap: () {
-                    // TODO: Tampilkan dialog konfirmasi hapus
-                  },
-                );
-              },
+          if (state is MenuActionFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: AppColors.primaryRed,
+              ),
             );
           }
-          return const Center(child: Text('Silakan muat ulang.'));
         },
+        child: BlocBuilder<MenusBloc, MenuState>(
+          builder: (context, state) {
+            if (state is MenuLoaded) {
+              return ListView.builder(
+                padding: const EdgeInsets.all(16.0),
+                itemCount: state.menuResponse.data.length,
+                itemBuilder: (context, index) {
+                  final menu = state.menuResponse.data[index];
+                  return MenuCard(
+                    data: menu, 
+                    onEditTap: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              EditMenuScreen(menu: menu)));
+                      if (result == true) {
+                        context.read<MenusBloc>().add(GetMenu());
+                      }
+                    }, 
+                    onDeleteTap: () {
+                      showDialog(
+                        context: context, 
+                        builder: (BuildContext dialogContext) {
+                          return AlertDialog(
+                            title: const Text('Konfirmasi Hapus'),
+                            content: Text(
+                              'Apakah Anda yakin ingin menghapus menu "${menu.name}"?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(dialogContext).pop();
+                                }, 
+                                child: const Text('Batal')
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  context
+                                    .read<MenusBloc>()
+                                    .add(DeleteMenu(menuId: menu.id));
+                                  Navigator.of(dialogContext).pop();
+                                }, 
+                                child: const Text('Hapus',
+                                  style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              );
+            }
+            if (state is MenuLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state is MenuError) {
+              return Center(child: Text(state.message));
+            }
+            return const Center(child: Text('Belum ada menu.'));
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -81,7 +122,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             context,
             MaterialPageRoute(builder: (context) => const AddMenuscreen()),
           );
-
           // Jika hasilnya 'true' (sukses menambah menu), refresh daftarnya
           if (result == true) {
             context.read<MenusBloc>().add(GetMenu());
