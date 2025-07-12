@@ -65,4 +65,20 @@ class AdminMenuRepository {
       return Left('Terjadi kesalahan: ${e.toString()}');
     }
   }
+
+  Future<Either<String, String>> deleteMenu(int menuId) async {
+    try {
+      final response = await _httpClient.delete('admin/menus/$menuId');
+
+      if (response.statusCode == 200) {
+        return const Right('Menu berhasil dihapus');
+      } else {
+        final error =
+            jsonDecode(response.body)['message'] ?? 'Gagal menghapus data';
+        return Left(error);
+      }
+    } catch (e) {
+      return Left('Terjadi kesalahan: ${e.toString()}');
+    }
+  }
 }
