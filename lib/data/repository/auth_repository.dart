@@ -37,5 +37,17 @@ class AuthRepository {
     }
   }
 
+  Future<Either<String, String>> logout() async {
+    try {
+      // Panggil endpoint logout, tidak perlu pedulikan responsnya selama berhasil
+      await _httpClient.post('logout', {}); 
+      // Hapus token dari local storage
+      await _secureStorage.delete(key: 'auth_token');
+      return const Right('Logout berhasil');
+    } catch (e) {
+      return Left('Terjadi kesalahan: ${e.toString()}');
+    }
+  }
+
   // Anda bisa tambahkan method register di sini nanti
 }
