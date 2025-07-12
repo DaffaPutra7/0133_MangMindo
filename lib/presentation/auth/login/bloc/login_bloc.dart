@@ -19,5 +19,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         (success) => emit(LoginSuccess(authResponse: success)),
       );
     });
+
+    on<LogoutButtonPressed>((event, emit) async {
+      await repository.logout();
+      // Kembalikan state ke awal setelah logout
+      emit(LoginInitial());
+    });
   }
 }
