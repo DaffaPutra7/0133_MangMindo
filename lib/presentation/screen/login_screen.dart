@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projek_akhir/data/model/request/auth/login_request_model.dart';
 import 'package:projek_akhir/presentation/auth/login/bloc/login_bloc.dart';
-import 'package:projek_akhir/presentation/screen/admin/admin_dashboard_screen.dart';
+// import 'package:projek_akhir/presentation/screen/admin/admin_dashboard_screen.dart';
+import 'package:projek_akhir/presentation/screen/admin/admin_main_screen.dart';
 import '../../core/core.dart';
 
 class LoginPage extends StatefulWidget {
@@ -86,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (role == 'admin') {
                       Navigator.pushReplacement(
                         context, 
-                        MaterialPageRoute(builder: (_) => const AdminDashboardPage())
+                        MaterialPageRoute(builder: (_) => const AdminMainScreen())
                       );
                     } else {
                       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CustomerDashboardPage()));
