@@ -41,7 +41,10 @@ class ServiceHttpClient {
 
   // Method POST dengan file
   Future<http.Response> postWithFile(
-      String endpoint, Map<String, String> body, XFile? file) async {
+    String endpoint,
+    Map<String, String> body,
+    XFile? file,
+  ) async {
     final url = Uri.parse('$baseUrl/$endpoint');
     final token = await _secureStorage.read(key: 'auth_token');
 
@@ -63,5 +66,20 @@ class ServiceHttpClient {
 
     final streamedResponse = await request.send();
     return await http.Response.fromStream(streamedResponse);
+  }
+
+  // Method DELETE
+  Future<http.Response> delete(String endpoint) async {
+    final url = Uri.parse('$baseUrl/$endpoint');
+    final token = await _secureStorage.read(key: 'auth_token');
+
+    return await http.delete(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
   }
 }
