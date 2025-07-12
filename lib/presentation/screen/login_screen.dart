@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projek_akhir/data/model/request/auth/login_request_model.dart';
-import 'package:projek_akhir/presentation/auth/bloc/login/bloc/login_bloc.dart';
+import 'package:projek_akhir/presentation/auth/login/bloc/login_bloc.dart';
 import 'package:projek_akhir/presentation/screen/admin/admin_dashboard_screen.dart';
 import '../../core/core.dart';
 
