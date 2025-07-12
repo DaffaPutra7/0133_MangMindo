@@ -7,3 +7,5 @@ class LoginButtonPressed extends LoginEvent {
 
   LoginButtonPressed({required this.data});
 }
+
+class LogoutButtonPressed extends LoginEvent {}
