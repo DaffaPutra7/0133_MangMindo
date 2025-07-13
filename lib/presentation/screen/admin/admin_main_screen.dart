@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projek_akhir/core/constants/colors.dart';
 import 'package:projek_akhir/presentation/admin/menu/bloc/menu_bloc.dart';
+import 'package:projek_akhir/presentation/admin/notifikasi/bloc/notification_bloc.dart';
+import 'package:projek_akhir/presentation/admin/order/bloc/admin_order_bloc.dart';
 import 'package:projek_akhir/presentation/auth/login/bloc/login_bloc.dart';
 import 'package:projek_akhir/presentation/screen/admin/admin_dashboard_screen.dart';
 import 'package:projek_akhir/presentation/screen/admin/admin_order_screen.dart';
@@ -18,13 +20,29 @@ class AdminMainScreen extends StatefulWidget {
 class _AdminMainScreenState extends State<AdminMainScreen> {
   int _selectedIndex = 0;
 
-  // Daftar halaman yang akan dinavigasi
   final List<Widget> _pages = [
-    const AdminDashboardPage(), // Halaman untuk kelola menu
-    const AdminOrderScreen(), // Halaman untuk kelola pesanan
+    const AdminDashboardPage(),
+    const AdminOrderScreen(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    // Memulai pemeriksaan notifikasi saat halaman ini dibuka
+    context.read<NotificationBloc>().add(StartOrderCheck());
+  }
+
+  // Method dispose sekarang bisa disederhanakan/dihapus karena BLoC mengurus dirinya sendiri
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
+
   void _onItemTapped(int index) {
+    // Jika tab Pesanan (index 1) diklik, muat ulang datanya
+    if (index == 1) {
+      context.read<AdminOrderBloc>().add(FetchAllOrders());
+    }
     setState(() {
       _selectedIndex = index;
     });
@@ -32,16 +50,42 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) {
-        if (state is LoginInitial) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginPage()),
-            (route) => false,
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LoginBloc, LoginState>(
+          listener: (context, state) {
+            if (state is LoginInitial) {
+              // Hentikan timer notifikasi sebelum logout
+              context.read<NotificationBloc>().add(StopOrderCheck());
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+                (route) => false,
+              );
+            }
+          },
+        ),
+        BlocListener<NotificationBloc, NotificationState>(
+          listener: (context, state) {
+            if (state is NewOrderReceived) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${state.newOrderCount} pesanan baru masuk!'),
+                  backgroundColor: AppColors.primaryGreen,
+                  action: SnackBarAction(
+                    label: 'LIHAT',
+                    textColor: Colors.white,
+                    onPressed: () {
+                      _onItemTapped(1);
+                    },
+                  ),
+                ),
+              );
+              context.read<AdminOrderBloc>().add(FetchAllOrders());
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -56,29 +100,23 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               onPressed: () {
                 showDialog(
                   context: context,
-                  builder:
-                      (context) => AlertDialog(
-                        title: const Text('Logout'),
-                        content: const Text('Apakah Anda yakin ingin logout?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Batal'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              context.read<LoginBloc>().add(
-                                LogoutButtonPressed(),
-                              );
-                            },
-                            child: const Text(
-                              'Logout',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
+                  builder: (dialogContext) => AlertDialog(
+                    title: const Text('Logout'),
+                    content: const Text('Apakah Anda yakin ingin logout?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext),
+                        child: const Text('Batal'),
                       ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(dialogContext);
+                          context.read<LoginBloc>().add(LogoutButtonPressed());
+                        },
+                        child: const Text('Logout', style: TextStyle(color: Colors.red)),
+                      ),
+                    ],
+                  ),
                 );
               },
               icon: const Icon(Icons.logout),
@@ -86,23 +124,22 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
           ],
         ),
         body: _pages[_selectedIndex],
-        floatingActionButton:
-            _selectedIndex == 0
-                ? FloatingActionButton(
-                  onPressed: () async {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddMenuscreen(),
-                      ),
-                    );
-                    if (result == true) {
-                      context.read<MenusBloc>().add(GetMenu());
-                    }
-                  },
-                  child: const Icon(Icons.add),
-                )
-                : null, // Sembunyikan tombol jika bukan di halaman menu
+        floatingActionButton: _selectedIndex == 0
+            ? FloatingActionButton(
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddMenuscreen(),
+                    ),
+                  );
+                  if (result == true) {
+                    context.read<MenusBloc>().add(GetMenu());
+                  }
+                },
+                child: const Icon(Icons.add),
+              )
+            : null,
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.fastfood), label: 'Menu'),
