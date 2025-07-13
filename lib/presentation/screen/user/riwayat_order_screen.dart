@@ -33,7 +33,12 @@ class RiwayatOrderScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final order = state.RiwayatResponse.data[index];
                   // Gunakan card yang sudah dibuat
-                  return RiwayatOrderCard(data: order);
+                  return RiwayatOrderCard(
+                    data: order,
+                    onReviewSuccess: () {
+                      context.read<RiwayatBloc>().add(FetchRiwayat());
+                    },
+                  );
                 },
               );
             }
