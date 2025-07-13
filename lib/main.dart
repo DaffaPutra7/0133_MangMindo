@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projek_akhir/core/constants/colors.dart';
 import 'package:projek_akhir/data/repository/admin_menu_repository.dart';
+import 'package:projek_akhir/data/repository/admin_order_repository.dart';
 import 'package:projek_akhir/data/repository/auth_repository.dart';
 import 'package:projek_akhir/data/repository/customer_menu_repository.dart';
 import 'package:projek_akhir/data/repository/order_repository.dart';
 import 'package:projek_akhir/presentation/admin/menu/bloc/menu_bloc.dart';
+import 'package:projek_akhir/presentation/admin/order/bloc/admin_order_bloc.dart';
 import 'package:projek_akhir/presentation/auth/login/bloc/login_bloc.dart';
 import 'package:projek_akhir/presentation/screen/login_screen.dart';
 import 'package:projek_akhir/presentation/user/cart/bloc/cart_bloc.dart';
@@ -44,6 +46,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => CartBloc()),
         BlocProvider(create: (context) => OrderBloc(OrderRepository(ServiceHttpClient()))),
         BlocProvider(create: (context) => RiwayatBloc(OrderRepository(ServiceHttpClient()))),
+        BlocProvider(create: (context) => AdminOrderBloc(AdminOrderRepository(ServiceHttpClient()))),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
