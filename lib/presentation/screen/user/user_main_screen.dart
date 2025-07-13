@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projek_akhir/core/constants/colors.dart';
+import 'package:projek_akhir/presentation/auth/login/bloc/login_bloc.dart';
+import 'package:projek_akhir/presentation/screen/login_screen.dart';
 import 'package:projek_akhir/presentation/screen/user/customer_menu_screen.dart';
 import 'package:projek_akhir/presentation/screen/user/order/order_screen.dart';
 import 'package:projek_akhir/presentation/screen/user/profil_screen.dart';
@@ -44,69 +46,81 @@ class _UserMainScreenState extends State<UserMainScreen> {
       'Profil Saya',
     ];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(pageTitles[_selectedIndex]),
-        backgroundColor: AppColors.primaryRed,
-        foregroundColor: Colors.white,
-        actions: [
-          if (_selectedIndex == 0)
-            BlocBuilder<CartBloc, CartState>(
-              builder: (context, state) {
-                if (state is CartLoaded && state.items.isNotEmpty) {
-                  final totalQuantity = state.items.fold<int>(
-                    0,
-                    (previousValue, element) =>
-                        previousValue + element.quantity,
-                  );
-                  return Badge(
-                    label: Text('$totalQuantity'),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const OrderScreen(),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.shopping_cart_outlined),
-                    ),
-                  );
-                }
-                return IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OrderScreen(),
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) {
+        if (state is LoginInitial) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginPage()),
+            (route) => false,
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(pageTitles[_selectedIndex]),
+          backgroundColor: AppColors.primaryRed,
+          foregroundColor: Colors.white,
+          actions: [
+            if (_selectedIndex == 0)
+              BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  if (state is CartLoaded && state.items.isNotEmpty) {
+                    final totalQuantity = state.items.fold<int>(
+                      0,
+                      (previousValue, element) =>
+                          previousValue + element.quantity,
+                    );
+                    return Badge(
+                      label: Text('$totalQuantity'),
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const OrderScreen(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.shopping_cart_outlined),
                       ),
                     );
-                  },
-                  icon: const Icon(Icons.shopping_cart_outlined),
-                );
-              },
+                  }
+                  return IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const OrderScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.shopping_cart_outlined),
+                  );
+                },
+              ),
+          ],
+        ),
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.restaurant_menu),
+              label: 'Menu',
             ),
-        ],
-      ),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu),
-            label: 'Menu',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Riwayat'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profil',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: AppColors.primaryRed,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
+            BottomNavigationBarItem(
+                icon: Icon(Icons.history), label: 'Riwayat'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              label: 'Profil',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: AppColors.primaryRed,
+          unselectedItemColor: Colors.grey,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+        ),
       ),
     );
   }
