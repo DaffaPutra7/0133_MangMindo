@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projek_akhir/core/constants/colors.dart';
 import 'package:projek_akhir/data/repository/admin_menu_repository.dart';
 import 'package:projek_akhir/data/repository/auth_repository.dart';
+import 'package:projek_akhir/data/repository/customer_menu_repository.dart';
 import 'package:projek_akhir/presentation/admin/menu/bloc/menu_bloc.dart';
 import 'package:projek_akhir/presentation/auth/login/bloc/login_bloc.dart';
 import 'package:projek_akhir/presentation/screen/login_screen.dart';
+import 'package:projek_akhir/presentation/user/menu/bloc/customer_menu_bloc.dart';
 import 'package:projek_akhir/service/service_http_client.dart';
 
 void main() {
@@ -28,6 +30,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => MenusBloc(
             AdminMenuRepository(ServiceHttpClient()),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => CustomerMenuBloc(
+            CustomerMenuRepository(ServiceHttpClient()),
           ),
         ),
       ],
