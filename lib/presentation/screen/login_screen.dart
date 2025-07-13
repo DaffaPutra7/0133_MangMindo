@@ -4,6 +4,7 @@ import 'package:projek_akhir/data/model/request/auth/login_request_model.dart';
 import 'package:projek_akhir/presentation/auth/login/bloc/login_bloc.dart';
 // import 'package:projek_akhir/presentation/screen/admin/admin_dashboard_screen.dart';
 import 'package:projek_akhir/presentation/screen/admin/admin_main_screen.dart';
+import 'package:projek_akhir/presentation/screen/register_screen.dart';
 import '../../core/core.dart';
 
 class LoginPage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const SpaceHeight(80.0),
               Image.asset(
-                "assets/images/logo.png", 
+                "assets/images/logo.png",
                 height: 150, // Atur ukuran tinggi logo
               ),
               const Text(
@@ -86,8 +87,10 @@ class _LoginPageState extends State<LoginPage> {
                     );
                     if (role == 'admin') {
                       Navigator.pushReplacement(
-                        context, 
-                        MaterialPageRoute(builder: (_) => const AdminMainScreen())
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AdminMainScreen(),
+                        ),
                       );
                     } else {
                       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CustomerDashboardPage()));
@@ -111,6 +114,26 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               const SpaceHeight(20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Belum punya akun?'),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Registrasi di sini',
+                      style: TextStyle(color: AppColors.primaryRed),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
