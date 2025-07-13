@@ -82,4 +82,23 @@ class ServiceHttpClient {
       },
     );
   }
+
+  // Method PATCH
+  Future<http.Response> patch(
+    String endpoint,
+    Map<String, dynamic> body,
+  ) async {
+    final url = Uri.parse('$baseUrl/$endpoint');
+    final token = await _secureStorage.read(key: 'auth_token');
+
+    return await http.patch(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+  }
 }
