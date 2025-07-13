@@ -13,6 +13,7 @@ import 'package:projek_akhir/presentation/screen/login_screen.dart';
 import 'package:projek_akhir/presentation/user/cart/bloc/cart_bloc.dart';
 import 'package:projek_akhir/presentation/user/menu/bloc/customer_menu_bloc.dart';
 import 'package:projek_akhir/presentation/user/order/bloc/order_bloc.dart';
+import 'package:projek_akhir/presentation/user/review/bloc/review_bloc.dart';
 import 'package:projek_akhir/presentation/user/riwayat/bloc/riwayat_bloc.dart';
 import 'package:projek_akhir/service/service_http_client.dart';
 
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => OrderBloc(OrderRepository(ServiceHttpClient()))),
         BlocProvider(create: (context) => RiwayatBloc(OrderRepository(ServiceHttpClient()))),
         BlocProvider(create: (context) => AdminOrderBloc(AdminOrderRepository(ServiceHttpClient()))),
+        BlocProvider(create: (context) => ReviewBloc(OrderRepository(ServiceHttpClient()))),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
