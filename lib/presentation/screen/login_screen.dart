@@ -5,6 +5,7 @@ import 'package:projek_akhir/presentation/auth/login/bloc/login_bloc.dart';
 // import 'package:projek_akhir/presentation/screen/admin/admin_dashboard_screen.dart';
 import 'package:projek_akhir/presentation/screen/admin/admin_main_screen.dart';
 import 'package:projek_akhir/presentation/screen/register_screen.dart';
+import 'package:projek_akhir/presentation/screen/user/customer_menu_screen.dart';
 import '../../core/core.dart';
 
 class LoginPage extends StatefulWidget {
@@ -93,7 +94,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       );
                     } else {
-                      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CustomerDashboardPage()));
+                      Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (_) => const CustomerMenuPage(),
+                        ),
+                      );
                     }
                   }
                 },
