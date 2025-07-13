@@ -6,6 +6,7 @@ import 'package:projek_akhir/presentation/auth/login/bloc/login_bloc.dart';
 import 'package:projek_akhir/presentation/screen/admin/admin_main_screen.dart';
 import 'package:projek_akhir/presentation/screen/register_screen.dart';
 import 'package:projek_akhir/presentation/screen/user/customer_menu_screen.dart';
+import 'package:projek_akhir/presentation/screen/user/user_main_screen.dart';
 import '../../core/core.dart';
 
 class LoginPage extends StatefulWidget {
@@ -97,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.pushReplacement(
                         context, 
                         MaterialPageRoute(
-                          builder: (_) => const CustomerMenuPage(),
+                          builder: (_) => const UserMainScreen(),
                         ),
                       );
                     }
