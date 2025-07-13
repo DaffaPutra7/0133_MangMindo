@@ -30,16 +30,22 @@ class User {
   final int id;
   final String name;
   final String email;
+  final String? latitude;
+  final String? longitude;
 
   User({
     required this.id,
     required this.name,
     required this.email,
+    this.latitude,
+    this.longitude,
   });
 
   factory User.fromMap(Map<String, dynamic> json) => User(
         id: json["id"],
         name: json["name"],
         email: json["email"],
+        latitude: json["latitude"],
+        longitude: json["longitude"],
       );
 }
