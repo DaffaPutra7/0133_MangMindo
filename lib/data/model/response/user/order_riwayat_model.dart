@@ -15,6 +15,18 @@ class OrderRiwayatResponseModel {
       );
 }
 
+class ReviewModel {
+  final int rating;
+  final String? comment;
+
+  ReviewModel({required this.rating, this.comment});
+
+  factory ReviewModel.fromMap(Map<String, dynamic> json) => ReviewModel(
+        rating: json["rating"],
+        comment: json["comment"],
+      );
+}
+
 class OrderModel {
   final int id;
   final int userId;
@@ -22,6 +34,7 @@ class OrderModel {
   final String status;
   final DateTime createdAt;
   final List<OrderItemModel> items; 
+  final ReviewModel? review;
 
   OrderModel({
     required this.id,
@@ -30,6 +43,7 @@ class OrderModel {
     required this.status,
     required this.createdAt,
     required this.items,
+    this.review,
   });
 
   factory OrderModel.fromMap(Map<String, dynamic> json) => OrderModel(
@@ -40,6 +54,7 @@ class OrderModel {
         createdAt: DateTime.parse(json["created_at"]),
         items: List<OrderItemModel>.from(
             json["items"].map((x) => OrderItemModel.fromMap(x))),
+        review: json["review"] == null ? null : ReviewModel.fromMap(json["review"]),
       );
 }
 
