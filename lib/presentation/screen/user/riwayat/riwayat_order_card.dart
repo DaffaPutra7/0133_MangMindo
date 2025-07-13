@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:projek_akhir/core/core.dart';
 import 'package:projek_akhir/data/model/response/user/order_riwayat_model.dart';
+import 'package:projek_akhir/presentation/screen/user/review/add_review_screen.dart';
 
 class RiwayatOrderCard extends StatelessWidget {
   final OrderModel data;
-  const RiwayatOrderCard({super.key, required this.data});
+
+  final VoidCallback? onReviewSuccess;
+
+  const RiwayatOrderCard({super.key, required this.data, this.onReviewSuccess});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +37,7 @@ class RiwayatOrderCard extends StatelessWidget {
         statusColor = AppColors.primaryGreen;
         statusText = 'Pesanan Sudah Diterima';
         break;
-      case 'cancelled': 
+      case 'cancelled':
         statusColor = AppColors.primaryRed;
         statusText = 'Pesanan Dibatalkan';
         break;
@@ -63,11 +67,11 @@ class RiwayatOrderCard extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor, 
+                    color: statusColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    statusText, 
+                    statusText,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -103,6 +107,28 @@ class RiwayatOrderCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (data.status == 'selesai' &&
+                data.review == null &&
+                onReviewSuccess != null) ...[
+              const Divider(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddReviewScreen(orderId: data.id),
+                      ),
+                    );
+                    if (result == true) {
+                      onReviewSuccess?.call();
+                    }
+                  },
+                  child: const Text('Beri Ulasan'),
+                ),
+              ),
+            ],
           ],
         ),
       ),
